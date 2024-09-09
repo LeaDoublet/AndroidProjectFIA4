@@ -67,4 +67,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.coil.compose)
+    implementation ("androidx.compose.material3.adaptive:adaptive-android:1.0.0")
 }
