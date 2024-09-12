@@ -194,8 +194,4 @@ fun Screen(windowSizeClass: WindowSizeClass, navController: NavHostController, m
     }
 }
 
-@Composable
-fun MovieScreen() {
-    // Contenu de l'écran MovieActivity
-    Text(text = "Bienvenue dans MovieActivity !")
-}
+
