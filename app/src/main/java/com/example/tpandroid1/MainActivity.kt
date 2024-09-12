@@ -1,39 +1,31 @@
 package com.example.tpandroid1
 
-import android.media.Image
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
-import coil.compose.AsyncImage
 import com.example.tpandroid1.ui.theme.TPAndroid1Theme
 
 class MainActivity : ComponentActivity() {
@@ -41,47 +33,55 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-                val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-                Screen(windowSizeClass)
+            TPAndroid1Theme {
+                val navController = rememberNavController()
+                NavigationComponent(navController)
             }
+        }
     }
-
 }
 
 @Composable
-fun Screen(windowClass: WindowSizeClass,modifier: Modifier=Modifier) {
-    when (windowClass.windowWidthSizeClass) {
+fun NavigationComponent(navController: NavHostController) {
+    // NavHost pour définir les destinations et gérer la navigation
+    NavHost(navController = navController, startDestination = "main") {
+        composable("main") {
+            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            Screen(windowSizeClass = windowSizeClass, navController = navController)
+        }
+        composable("movie") {
+            MovieScreen()
+        }
+    }
+}
+
+@Composable
+fun Screen(windowSizeClass: WindowSizeClass, navController: NavHostController, modifier: Modifier = Modifier) {
+    when (windowSizeClass.windowWidthSizeClass) {
         WindowWidthSizeClass.COMPACT -> {
             Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                // prend tout l'espace de l'écran
-                horizontalAlignment = Alignment.CenterHorizontally,  // Centre les éléments horizontalement
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-
                 Image(
-                    painterResource(R.drawable.bob),
+                    painter = painterResource(R.drawable.bob),
                     contentDescription = "bob leponge",
-                    contentScale = ContentScale.Crop,            // crop the image if it's not a square
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(200.dp)
-                        .clip(CircleShape)                       // clip to the circle shape
+                        .clip(CircleShape)
                 )
                 Text(
-                    text = "Bob l\'eponge",
-                    modifier = modifier
-                        .size(150.dp),
+                    text = "Bob l\'éponge",
+                    modifier = modifier.size(150.dp),
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "Expert en préparation de burgers\n" +
-                            "Bikini Bottom, Océan Pacifique",
+                    text = "Expert en préparation de burgers\nBikini Bottom, Océan Pacifique",
                     modifier = modifier
                 )
-                Row(
-                    modifier = Modifier,
-                ) {
+                Row(modifier = Modifier) {
                     Icon(
                         painter = painterResource(R.drawable.mail),
                         contentDescription = "Icon mail",
@@ -92,13 +92,10 @@ fun Screen(windowClass: WindowSizeClass,modifier: Modifier=Modifier) {
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }
-                Row(
-                    modifier = Modifier,
-                    horizontalArrangement = Arrangement.Center
-                ) {
+                Row(modifier = Modifier, horizontalArrangement = Arrangement.Center) {
                     Icon(
                         painter = painterResource(R.drawable.linkin),
-                        contentDescription = "Icon mail",
+                        contentDescription = "Icon LinkedIn",
                         modifier = Modifier.size(50.dp)
                     )
                     Text(
@@ -108,11 +105,12 @@ fun Screen(windowClass: WindowSizeClass,modifier: Modifier=Modifier) {
                 }
                 Button(
                     onClick = {
-                        // Action à exécuter lors du clic
+                        // Navigation vers MovieScreen
+                        navController.navigate("movie")
                     },
-                    modifier = Modifier.padding(16.dp) // Modifier pour ajuster les marges ou autres styles
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    Text(text = "demarrer")  // Contenu du bouton
+                    Text(text = "Démarrer")
                 }
             }
         }
@@ -124,7 +122,6 @@ fun Screen(windowClass: WindowSizeClass,modifier: Modifier=Modifier) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                // Première colonne avec l'image et les informations principales
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
@@ -149,7 +146,6 @@ fun Screen(windowClass: WindowSizeClass,modifier: Modifier=Modifier) {
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
-                // Deuxième colonne avec les icônes et le bouton
                 Column(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center,
@@ -184,7 +180,10 @@ fun Screen(windowClass: WindowSizeClass,modifier: Modifier=Modifier) {
                         )
                     }
                     Button(
-                        onClick = { /* Action à exécuter */ },
+                        onClick = {
+                            // Navigation vers MovieScreen
+                            navController.navigate("movie")
+                        },
                         modifier = Modifier.padding(top = 16.dp)
                     ) {
                         Text(text = "Démarrer")
@@ -195,3 +194,8 @@ fun Screen(windowClass: WindowSizeClass,modifier: Modifier=Modifier) {
     }
 }
 
+@Composable
+fun MovieScreen() {
+    // Contenu de l'écran MovieActivity
+    Text(text = "Bienvenue dans MovieActivity !")
+}
