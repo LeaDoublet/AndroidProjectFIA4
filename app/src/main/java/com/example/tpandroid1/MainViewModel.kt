@@ -23,8 +23,5 @@ class MainViewModel : ViewModel() {
             movies.value=api.lastmovies(api_key =api_key ).results
         }
     }
-   /* val response = api.getactor(query = "Bill Skarsgård",
-        api_key = "5589302c27bf6110d7ea1724232a8e7e"
-    )*/
 
 }

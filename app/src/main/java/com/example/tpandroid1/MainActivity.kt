@@ -9,6 +9,9 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -33,6 +36,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.example.tpandroid1.ui.theme.TPAndroid1Theme
 import kotlinx.serialization.Serializable
 
@@ -67,10 +72,23 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
 fun MovieScreen(viewModel: MainViewModel,) {
     val movies by viewModel.movies.collectAsState()
     if(movies.isEmpty()) viewModel.getMovies()
-    LazyColumn {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2), // Utiliser 2 colonnes
+        modifier = Modifier.padding(16.dp)
+    ) {
         items(movies){
-                movie ->Text(text=movie.original_title)
+                movie ->Text(text=movie.original_title,modifier = Modifier.padding(8.dp))
+            val imageUrl = "https://image.tmdb.org/t/p/w780" + movie.poster_path
+            Image(
+                painter = rememberAsyncImagePainter(imageUrl),
+                contentDescription = movie.original_title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp) // Taille de l'image
+            )
         }
+
     }
 }
 
