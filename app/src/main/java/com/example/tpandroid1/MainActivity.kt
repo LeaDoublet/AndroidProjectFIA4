@@ -1,17 +1,23 @@
 package com.example.tpandroid1
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,36 +34,48 @@ import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.tpandroid1.ui.theme.TPAndroid1Theme
+import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel: MainViewModel by viewModels()
         enableEdgeToEdge()
         setContent {
             TPAndroid1Theme {
                 val navController = rememberNavController()
-                NavigationComponent(navController)
+                NavigationComponent(navController,viewModel)
             }
         }
     }
 }
 
 @Composable
-fun NavigationComponent(navController: NavHostController) {
+fun NavigationComponent(navController: NavHostController, viewModel: MainViewModel) {
     // NavHost pour définir les destinations et gérer la navigation
     NavHost(navController = navController, startDestination = "main") {
         composable("main") {
             val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-            Screen(windowSizeClass = windowSizeClass, navController = navController)
+            Profil(windowSizeClass = windowSizeClass, navController = navController)
         }
         composable("movie") {
-            MovieScreen()
+            MovieScreen(viewModel = viewModel)
+        }
+    }
+}
+@Composable
+fun MovieScreen(viewModel: MainViewModel,) {
+    val movies by viewModel.movies.collectAsState()
+    if(movies.isEmpty()) viewModel.getMovies()
+    LazyColumn {
+        items(movies){
+                movie ->Text(text=movie.original_title)
         }
     }
 }
 
 @Composable
-fun Screen(windowSizeClass: WindowSizeClass, navController: NavHostController, modifier: Modifier = Modifier) {
+fun Profil(windowSizeClass: WindowSizeClass, navController: NavHostController, modifier: Modifier = Modifier) {
     when (windowSizeClass.windowWidthSizeClass) {
         WindowWidthSizeClass.COMPACT -> {
             Column(
