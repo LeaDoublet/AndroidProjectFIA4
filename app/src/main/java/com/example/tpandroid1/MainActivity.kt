@@ -15,9 +15,10 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -101,15 +102,40 @@ fun MovieScreen(viewModel: MainViewModel,) {
 
         bottomBar = {
             BottomAppBar(
-            ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = "Bottom app bar",
-                )
-            }
+                modifier = Modifier.fillMaxWidth(),  // Remplir la largeur de l'écran
+                contentPadding = PaddingValues(horizontal = 16.dp),  // Optionnel, pour ajouter du padding
+                content = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,  // Répartir également les icônes
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = { }) {
+                            Icon(
+                                imageVector = Icons.Filled.Movie,
+                                contentDescription = "Movie Clap Icon",
+                                modifier = Modifier.size(50.dp)
+                            )
+                        }
 
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                imageVector = Icons.Filled.Tv,
+                                contentDescription = "Television Icon",
+                                modifier = Modifier.size(50.dp)
+                            )
+                        }
+
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                imageVector = Icons.Filled.Person,
+                                contentDescription = "Person Icon",
+                                modifier = Modifier.size(50.dp)
+                            )
+                        }
+                    }
+                }
+            )
     }
     ) { innerPadding ->
         LazyVerticalGrid(
