@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -73,20 +74,49 @@ fun MovieScreen(viewModel: MainViewModel,) {
     val movies by viewModel.movies.collectAsState()
     if(movies.isEmpty()) viewModel.getMovies()
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2), // Utiliser 2 colonnes
-        modifier = Modifier.padding(16.dp)
+        columns = GridCells.Fixed(2),
+        modifier = Modifier.padding(16.dp),
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(movies){
-                movie ->Text(text=movie.original_title,modifier = Modifier.padding(8.dp))
-            val imageUrl = "https://image.tmdb.org/t/p/w780" + movie.poster_path
-            Image(
-                painter = rememberAsyncImagePainter(imageUrl),
-                contentDescription = movie.original_title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp) // Taille de l'image
-            )
+                movie ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        val imageUrl = "https://image.tmdb.org/t/p/w780" + movie.poster_path
+                        Image(
+                            painter = rememberAsyncImagePainter(imageUrl),
+                            contentDescription = movie.original_title,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp)
+                        )
+                        Spacer(
+                            modifier = Modifier.height(8.dp)
+                        )
+                        Text(
+                            text = movie.original_title,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = movie.release_date,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                }
+            }
+
         }
 
     }
