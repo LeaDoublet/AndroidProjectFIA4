@@ -14,10 +14,19 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -67,27 +76,57 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
         composable("movie") {
             MovieScreen(viewModel = viewModel)
         }
+        composable("series") {
+            Series()
+        }
     }
 }
+
+@Composable
+fun Series() {
+    TODO("Not yet implemented")
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieScreen(viewModel: MainViewModel,) {
     val movies by viewModel.movies.collectAsState()
     if(movies.isEmpty()) viewModel.getMovies()
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.padding(16.dp),
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(movies){
-                movie ->
+    Scaffold(
+        topBar = {
+        TopAppBar(
+            title = { Text("Mon Application") },
+
+        )},
+
+        bottomBar = {
+            BottomAppBar(
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = "Bottom app bar",
+                )
+            }
+
+    }
+    ) { innerPadding ->
+        LazyVerticalGrid(
+
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.padding(innerPadding),
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(movies) { movie ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
                 ) {
-                    Column (
+                    Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(8.dp)
                     ) {
@@ -114,13 +153,15 @@ fun MovieScreen(viewModel: MainViewModel,) {
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
+                    }
                 }
+
             }
-
         }
-
     }
 }
+
+
 
 @Composable
 fun Profil(windowSizeClass: WindowSizeClass, navController: NavHostController, modifier: Modifier = Modifier) {
@@ -184,6 +225,7 @@ fun Profil(windowSizeClass: WindowSizeClass, navController: NavHostController, m
                 }
             }
         }
+
         else -> {
             Row(
                 modifier = Modifier
