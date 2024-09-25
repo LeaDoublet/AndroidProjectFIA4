@@ -127,7 +127,8 @@ fun Profil(windowSizeClass: WindowSizeClass, navController: NavHostController, m
     when (windowSizeClass.windowWidthSizeClass) {
         WindowWidthSizeClass.COMPACT -> {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -141,13 +142,15 @@ fun Profil(windowSizeClass: WindowSizeClass, navController: NavHostController, m
                 )
                 Text(
                     text = "Bob l\'éponge",
-                    modifier = modifier.size(150.dp),
+                    modifier = modifier
+                        .padding(50.dp),
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = "Expert en préparation de burgers\nBikini Bottom, Océan Pacifique",
-                    modifier = modifier
+                    modifier = Modifier.padding(50.dp)
                 )
+
                 Row(modifier = Modifier) {
                     Icon(
                         painter = painterResource(R.drawable.mail),
@@ -243,7 +246,7 @@ fun Profil(windowSizeClass: WindowSizeClass, navController: NavHostController, m
                         )
                         Text(
                             text = "www.linkedin.com/bob-leponge",
-                            modifier = Modifier.padding(start = 8.dp)
+                            modifier = Modifier.padding(start = 10.dp)
                         )
                     }
                     Button(
