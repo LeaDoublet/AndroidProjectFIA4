@@ -1,5 +1,5 @@
 package com.example.tpandroid1
-
+import com.example.tpandroid1.Series
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -78,96 +78,6 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
         composable("series") {
             Series(viewModel = viewModel,navController = navController)
         }
-    }
-}
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Series(viewModel: MainViewModel,navController: NavHostController) {
-    var searchQuery by remember { mutableStateOf("") }
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Fav'app") },
-                actions = {
-                    SearchBar(
-                        query = searchQuery,
-                        onQueryChange = { newQuery ->
-                            searchQuery = newQuery
-                            viewModel.getMovieByName(newQuery)
-                        },
-                        onSearch = { viewModel.getMovieByName(searchQuery) },
-                        placeholder = { Text("Rechercher un film") },
-                        active = false,
-                        onActiveChange = { active ->
-                            if (!active) {
-                                searchQuery = ""
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    ){
-
-                    }
-                }
-            )
-        },
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier.fillMaxWidth(),  // Remplir la largeur de l'écran
-                contentPadding = PaddingValues(horizontal = 16.dp),  // Optionnel, pour ajouter du padding
-                content = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,  // Répartir également les icônes
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            IconButton(onClick = {
-                                navController.navigate("movie")
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Movie,
-                                    contentDescription = "Movie Clap Icon",
-                                    modifier = Modifier.size(50.dp)
-                                )
-
-                            }
-                            Text("Films")
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            IconButton(onClick = { navController.navigate("series") }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Tv,
-                                    contentDescription = "Television Icon",
-                                    modifier = Modifier.size(50.dp)
-                                )
-
-                            }
-                            Text("Series")
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Person,
-                                    contentDescription = "Person Icon",
-                                    modifier = Modifier.size(50.dp)
-                                )
-                            }
-                            Text("Acteurs")
-                        }
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Text("CC")
     }
 }
 
