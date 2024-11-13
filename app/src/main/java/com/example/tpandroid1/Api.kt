@@ -24,6 +24,6 @@ interface Api {
     suspend fun getMovieByKeyWord(
         @Query("api_key") api_key: String,
         keyWord: String
-    ):TmdbMovie
+    ):TmdbMovieResult
 
 }

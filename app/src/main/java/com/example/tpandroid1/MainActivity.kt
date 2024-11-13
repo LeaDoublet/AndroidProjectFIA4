@@ -1,6 +1,5 @@
 package com.example.tpandroid1
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,16 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
@@ -26,12 +22,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,7 +40,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -48,9 +47,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.example.tpandroid1.ui.theme.TPAndroid1Theme
-import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,30 +72,138 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
             Profil(windowSizeClass = windowSizeClass, navController = navController)
         }
         composable("movie") {
-            MovieScreen(viewModel = viewModel)
+            MovieScreen(viewModel = viewModel,navController = navController)
         }
         composable("series") {
-            Series()
+            Series(viewModel = viewModel,navController = navController)
         }
     }
 }
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Series() {
-    TODO("Not yet implemented")
+fun Series(viewModel: MainViewModel,navController: NavHostController) {
+    var searchQuery by remember { mutableStateOf("") }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Fav'app") },
+                actions = {
+                    SearchBar(
+                        query = searchQuery,
+                        onQueryChange = { newQuery ->
+                            searchQuery = newQuery
+                            viewModel.getMovieByName(newQuery)
+                        },
+                        onSearch = { viewModel.getMovieByName(searchQuery) },
+                        placeholder = { Text("Rechercher un film") },
+                        active = false,
+                        onActiveChange = { active ->
+                            if (!active) {
+                                searchQuery = ""
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ){
+
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier.fillMaxWidth(),  // Remplir la largeur de l'écran
+                contentPadding = PaddingValues(horizontal = 16.dp),  // Optionnel, pour ajouter du padding
+                content = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,  // Répartir également les icônes
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            IconButton(onClick = {
+                                navController.navigate("movie")
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Movie,
+                                    contentDescription = "Movie Clap Icon",
+                                    modifier = Modifier.size(50.dp)
+                                )
+
+                            }
+                            Text("Films")
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            IconButton(onClick = { navController.navigate("series") }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Tv,
+                                    contentDescription = "Television Icon",
+                                    modifier = Modifier.size(50.dp)
+                                )
+
+                            }
+                            Text("Series")
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Person,
+                                    contentDescription = "Person Icon",
+                                    modifier = Modifier.size(50.dp)
+                                )
+                            }
+                            Text("Acteurs")
+                        }
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Text("CC")
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieScreen(viewModel: MainViewModel,) {
+fun MovieScreen(viewModel: MainViewModel,navController: NavHostController) {
     val movies by viewModel.movies.collectAsState()
     if(movies.isEmpty()) viewModel.getMovies()
+    var searchQuery by remember { mutableStateOf("") }
     Scaffold(
         topBar = {
-        TopAppBar(
-            title = { Text("Mon Application") },
+            TopAppBar(
+                title = { Text("Fav'app") },
+                actions = {
+                    SearchBar(
+                        query = searchQuery,
+                        onQueryChange = { newQuery ->
+                            searchQuery = newQuery
+                            viewModel.getMovieByName(newQuery)
+                        },
+                        onSearch = { viewModel.getMovieByName(searchQuery) },
+                        placeholder = { Text("Rechercher un film") },
+                        active = false,
+                        onActiveChange = { active ->
+                            if (!active) {
+                                searchQuery = ""
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                    ){
 
-        )},
+                    }
+                }
+            )
+        },
 
         bottomBar = {
             BottomAppBar(
@@ -110,28 +215,45 @@ fun MovieScreen(viewModel: MainViewModel,) {
                         horizontalArrangement = Arrangement.SpaceEvenly,  // Répartir également les icônes
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(onClick = { }) {
-                            Icon(
-                                imageVector = Icons.Filled.Movie,
-                                contentDescription = "Movie Clap Icon",
-                                modifier = Modifier.size(50.dp)
-                            )
-                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            IconButton(onClick = {
+                                navController.navigate("movie")
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Movie,
+                                    contentDescription = "Movie Clap Icon",
+                                    modifier = Modifier.size(50.dp)
+                                )
 
-                        IconButton(onClick = {  }) {
-                            Icon(
-                                imageVector = Icons.Filled.Tv,
-                                contentDescription = "Television Icon",
-                                modifier = Modifier.size(50.dp)
-                            )
+                            }
+                            Text("Films")
                         }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            IconButton(onClick = { navController.navigate("series") }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Tv,
+                                    contentDescription = "Television Icon",
+                                    modifier = Modifier.size(50.dp)
+                                )
 
-                        IconButton(onClick = {  }) {
-                            Icon(
-                                imageVector = Icons.Filled.Person,
-                                contentDescription = "Person Icon",
-                                modifier = Modifier.size(50.dp)
-                            )
+                            }
+                            Text("Series")
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Person,
+                                    contentDescription = "Person Icon",
+                                    modifier = Modifier.size(50.dp)
+                                )
+                            }
+                            Text("Acteurs")
                         }
                     }
                 }
