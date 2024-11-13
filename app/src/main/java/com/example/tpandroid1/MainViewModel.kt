@@ -1,5 +1,6 @@
 package com.example.tpandroid1
 
+import android.util.Log
 import android.widget.ListView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,8 +32,9 @@ class MainViewModel : ViewModel() {
                 val searchResults = api.getMovieByKeyWord(api_key = api_key, keyWord = keyWord)
                 // Mettre à jour la liste des films avec les résultats de la recherche
                 movies.value = searchResults.results
+                Log.v("query",movies.value.size.toString())
             } catch (e: Exception) {
-                println("Erreur lors de la recherche de films: ${e.message}")
+                Log.v("query","Erreur lors de la recherche de films: ${e.message}")
             }
         }
     }

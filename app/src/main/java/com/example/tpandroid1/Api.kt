@@ -14,16 +14,16 @@ interface Api {
         @Query("api_key") api_key: String
     ) : Movie
 
-    @GET("/search/person")
+    @GET("search/person")
     suspend fun getactor(
         @Query("api_key") api_key: String,
         @Query("person") person: String
     ) : Cast
 
-    @GET("/search/movie")
+    @GET("search/movie")
     suspend fun getMovieByKeyWord(
         @Query("api_key") api_key: String,
-        keyWord: String
+        @Query("query") keyWord: String
     ):TmdbMovieResult
 
 }

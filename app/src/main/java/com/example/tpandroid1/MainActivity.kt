@@ -1,6 +1,7 @@
 package com.example.tpandroid1
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -174,8 +175,11 @@ fun Series(viewModel: MainViewModel,navController: NavHostController) {
 @Composable
 fun MovieScreen(viewModel: MainViewModel,navController: NavHostController) {
     val movies by viewModel.movies.collectAsState()
-    if(movies.isEmpty()) viewModel.getMovies()
     var searchQuery by remember { mutableStateOf("") }
+
+    //recherche initale au démarrage de l'appli
+    if(movies.isEmpty()) viewModel.getMovies()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -185,14 +189,17 @@ fun MovieScreen(viewModel: MainViewModel,navController: NavHostController) {
                         query = searchQuery,
                         onQueryChange = { newQuery ->
                             searchQuery = newQuery
-                            viewModel.getMovieByName(newQuery)
+                           // viewModel.getMovieByName(newQuery)
                         },
-                        onSearch = { viewModel.getMovieByName(searchQuery) },
+                        onSearch = { viewModel.getMovieByName(searchQuery)
+                            Log.v("query",searchQuery)
+                                   },
                         placeholder = { Text("Rechercher un film") },
                         active = false,
                         onActiveChange = { active ->
                             if (!active) {
                                 searchQuery = ""
+                              //  viewModel.getMovies()
                             }
                         },
                         modifier = Modifier
