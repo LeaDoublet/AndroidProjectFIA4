@@ -18,12 +18,26 @@ interface Api {
     suspend fun getactor(
         @Query("api_key") api_key: String,
         @Query("person") person: String
-    ) : Cast
+    ) : TmdbActeurResult
 
     @GET("search/movie")
     suspend fun getMovieByKeyWord(
         @Query("api_key") api_key: String,
         @Query("query") keyWord: String
     ):TmdbMovieResult
+
+    @GET("trending/tv/week")
+    suspend fun lastseries(@Query("api_key") api_key: String ): TmdbSerieResult
+
+    @GET("tv/{tv_id}")
+    suspend fun getseriedetail(
+        @Path("tv_id") serieId: Int,
+        @Query("api_key") api_key: String
+    ) : TmdbSerie
+
+    @GET("trending/person/week")
+    suspend fun getActeurs(
+        @Query("api_key") api_key: String
+    ) : TmdbActeurResult
 
 }

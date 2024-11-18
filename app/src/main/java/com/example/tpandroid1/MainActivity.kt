@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -78,6 +79,9 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
         composable("series") {
             Series(viewModel = viewModel,navController = navController)
         }
+        composable("acteurs") {
+            Acteurs(viewModel=viewModel, navController = navController)
+        }
     }
 }
 
@@ -88,7 +92,7 @@ fun MovieScreen(viewModel: MainViewModel,navController: NavHostController) {
     var searchQuery by remember { mutableStateOf("") }
 
     //recherche initale au démarrage de l'appli
-    if(movies.isEmpty()) viewModel.getMovies()
+    LaunchedEffect(true) { viewModel.getMovies()}
 
     Scaffold(
         topBar = {
@@ -163,7 +167,7 @@ fun MovieScreen(viewModel: MainViewModel,navController: NavHostController) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            IconButton(onClick = { }) {
+                            IconButton(onClick = { navController.navigate("acteurs")}) {
                                 Icon(
                                     imageVector = Icons.Filled.Person,
                                     contentDescription = "Person Icon",

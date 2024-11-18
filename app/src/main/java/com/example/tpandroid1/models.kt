@@ -102,7 +102,7 @@ class TmdbMovie(
     val genre_ids: List<Int> = listOf(),
     val poster_path: String? = ""
 )
-class TmdbPersonne(
+class TmdbActorDetailResult(
     var adult: Boolean = false,
     var also_known_as: List<String> = listOf(),
     var biography: String,
@@ -118,4 +118,51 @@ class TmdbPersonne(
     var popularity         : Double?           = null,
     var profilePath        : String
 
+)
+data class TmdbActeurResult(
+    val page: Int = 0,
+    val results: List<TmdbActeur> = listOf(),
+    val total_pages: Int = 0,
+    val total_results: Int = 0
+)
+
+data class TmdbActeur(
+    val adult: Boolean = false,
+    val gender: Int = 0,
+    val id: Int = 0,
+    val known_for_department: String = "",
+    val media_type: String = "",
+    val name: String = "",
+    val original_name: String = "",
+    val popularity: Double = 0.0,
+    val profile_path: String = ""
+)
+data class TmdbSerieResult(
+    val page: Int = 0,
+    val results: List<TmdbSerie> = listOf(),
+    val total_pages: Int = 0,
+    val total_results: Int = 0
+)
+
+data class TmdbSerie(
+    val adult: Boolean = false,
+    val backdrop_path: String = "",
+    val first_air_date: String = "",
+    val genre_ids: List<Int> = listOf(),
+    val id: Int = 0,
+    val media_type: String = "",
+    val name: String = "",
+    val origin_country: List<String> = listOf(),
+    val original_language: String = "",
+    val original_name: String = "",
+    val overview: String = "",
+    val popularity: Double = 0.0,
+    val poster_path: String = "",
+    val vote_average: Double = 0.0,
+    val vote_count: Int = 0
+)
+
+class Country (
+    val id: Int,
+    val origin_country: String = ""
 )

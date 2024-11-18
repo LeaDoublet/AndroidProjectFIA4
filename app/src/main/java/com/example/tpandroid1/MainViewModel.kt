@@ -19,10 +19,18 @@ class MainViewModel : ViewModel() {
 
     val api=retrofit.create(Api::class.java)
     val movies = MutableStateFlow<List<TmdbMovie>>(listOf())
+    val series = MutableStateFlow<List<TmdbSerie>>(listOf())
     val api_key = "5589302c27bf6110d7ea1724232a8e7e"
     fun getMovies(){
         viewModelScope.launch {
             movies.value=api.lastmovies(api_key =api_key ).results
+        }
+    }
+
+    fun getSeries(){
+        viewModelScope.launch {
+            series.value=api.lastseries(api_key =api_key ).results
+            Log.v("queryviewmodel",series.value.toString())
         }
     }
 
@@ -32,11 +40,20 @@ class MainViewModel : ViewModel() {
                 val searchResults = api.getMovieByKeyWord(api_key = api_key, keyWord = keyWord)
                 // Mettre à jour la liste des films avec les résultats de la recherche
                 movies.value = searchResults.results
-                Log.v("query",movies.value.size.toString())
+                Log.v("query",movies.value.toString())
             } catch (e: Exception) {
                 Log.v("query","Erreur lors de la recherche de films: ${e.message}")
             }
         }
     }
+
+    fun getActeurs() {
+        viewModelScope.launch {
+            val acteurs = api.getActeurs(api_key = api_key).results
+            Log.v("query",acteurs.toString())
+
+        }
+    }
+
 
 }
