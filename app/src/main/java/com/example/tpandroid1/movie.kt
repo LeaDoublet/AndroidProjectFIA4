@@ -3,6 +3,7 @@ package com.example.tpandroid1
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,29 +31,66 @@ fun MovieDetailScreen(movieId: Int, viewModel: MainViewModel, navController: Nav
     viewModel.getMovieDetailById(movieId)
     val movieDetails = viewModel.movieDetails.value
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         IconButton(
             onClick = { navController.navigate("movie") },
             modifier = Modifier.align(Alignment.Start)
-        ) { Icon(
-            imageVector = Icons.Filled.ArrowBackIosNew,
-            contentDescription = "Previous",
-            modifier = Modifier.size(50.dp)
-        )
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ArrowBackIosNew,
+                contentDescription = "Previous",
+                modifier = Modifier.size(50.dp)
+            )
         }
-        Text(text = movieDetails.overview, fontWeight = FontWeight.Bold, fontSize = 24.sp)
-        Text(text = "Release Date: ${movieDetails.release_date}")
-        Text(text = movieDetails.overview)
 
+        if (movieDetails.id != 0) {
+            Text(
+                text = movieDetails.original_title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            Text(
+                text = "Release Date: ${movieDetails.release_date}",
+                fontSize = 16.sp,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+            Text(
+                text = movieDetails.overview,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
 
-        val imageUrl = "https://image.tmdb.org/t/p/w780${movieDetails.poster_path}"
-        Image(
-            painter = rememberAsyncImagePainter(imageUrl),
-            contentDescription = movieDetails.original_title,
-            modifier = Modifier.fillMaxWidth().height(180.dp)
-        )
+            val imageUrl = "https://image.tmdb.org/t/p/w780${movieDetails.poster_path}"
+            Image(
+                painter = rememberAsyncImagePainter(imageUrl),
+                contentDescription = movieDetails.original_title,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
+                    .padding(vertical = 8.dp)
+            )
 
-        Text(text = "Genres: ${movieDetails.genres.joinToString { it.name }}")
-        Text(text = "Budget: $${movieDetails.budget}")
+            Text(
+                text = "Genres: ${movieDetails.genres.joinToString { it.name }}",
+                fontSize = 14.sp,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+            Text(
+                text = "Budget: $${movieDetails.budget}",
+                fontSize = 14.sp,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        } else {
+            Text(
+                text = "Chargement des détails du film...",
+                fontSize = 16.sp,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+        }
     }
 }
