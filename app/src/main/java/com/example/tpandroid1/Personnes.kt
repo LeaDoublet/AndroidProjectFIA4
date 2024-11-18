@@ -61,7 +61,7 @@ fun Acteurs(viewModel: MainViewModel, navController: NavHostController) {
                             searchQuery = newQuery
                             //viewModel.getMovieByName(newQuery)
                         },
-                        onSearch = { viewModel.getMovieByName(searchQuery) },
+                        onSearch = { viewModel.getActeurByName(searchQuery) },
                         placeholder = { Text("Rechercher un acteur") },
                         active = false,
                         onActiveChange = { active ->

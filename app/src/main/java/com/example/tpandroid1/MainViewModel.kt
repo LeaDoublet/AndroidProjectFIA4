@@ -35,6 +35,18 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun getSerieByName(keyWord:String){
+        viewModelScope.launch {
+            try {
+                val searchResults = api.getSerieByKeyWord(api_key = api_key, keyWord = keyWord)
+                // Mettre à jour la liste des serie avec les résultats de la recherche
+                series.value = searchResults.results
+            } catch (e: Exception) {
+                Log.v("query","Erreur lors de la recherche de serie: ${e.message}")
+            }
+        }
+    }
+
     fun getMovieByName(keyWord:String){
         viewModelScope.launch {
             try {
@@ -54,6 +66,20 @@ class MainViewModel : ViewModel() {
             Log.v("query",acteurs.toString())
 
         }
+    }
+
+    fun getActeurByName(keyWord: String) {
+        viewModelScope.launch {
+            try {
+                val searchResults = api.getActeurByKeyWord(api_key = api_key, keyWord = keyWord)
+                // Mettre à jour la liste des acteurs avec les résultats de la recherche
+                acteurs.value = searchResults.results
+            } catch (e: Exception) {
+                Log.v("query", "Erreur lors de la recherche d'acteur: ${e.message}")
+
+            }
+        }
+
     }
 
 

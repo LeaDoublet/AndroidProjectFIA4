@@ -40,4 +40,17 @@ interface Api {
         @Query("api_key") api_key: String
     ) : TmdbActeurResult
 
+    @GET("search/tv")
+    suspend fun getSerieByKeyWord(
+        @Query("api_key") api_key: String,
+        @Query("query") keyWord: String
+    ):TmdbSerieResult
+
+    @GET("search/person")
+    suspend fun getActeurByKeyWord(
+        @Query("api_key") api_key: String,
+        @Query("query") keyWord: String
+    ):TmdbActeurResult
+
+
 }

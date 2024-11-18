@@ -55,7 +55,7 @@ fun Series(viewModel: MainViewModel, navController: NavHostController) {
                             searchQuery = newQuery
                             //viewModel.getMovieByName(newQuery)
                         },
-                        onSearch = { viewModel.getMovieByName(searchQuery) },
+                        onSearch = { viewModel.getSerieByName(searchQuery) },
                         placeholder = { Text("Rechercher une serie") },
                         active = false,
                         onActiveChange = { active ->
