@@ -52,5 +52,11 @@ interface Api {
         @Query("query") keyWord: String
     ):TmdbActeurResult
 
+    @GET("movie/{movieId}")
+    suspend fun getMovieDetailById(
+        @Path("movieId") movieId: Int,
+        @Query("api_key") api_key: String,
+        @Query("append_to_response") append: String = "credits"
+    ): TmdbMovieDetail
 
 }

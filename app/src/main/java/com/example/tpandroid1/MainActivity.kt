@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -80,6 +81,11 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
         }
         composable("personnes") {
             Acteurs(viewModel=viewModel, navController = navController)
+        }
+        composable("movieDetail/{movieId}") { backStackEntry ->
+            val movieIdrecup = backStackEntry.arguments?.getString("movieId")?.toInt() ?: 0
+            Log.v("query","L'id recup est $movieIdrecup")
+            MovieDetailScreen(movieId = movieIdrecup, viewModel = viewModel, navController = navController)
         }
     }
 }
@@ -194,6 +200,10 @@ fun MovieScreen(viewModel: MainViewModel,navController: NavHostController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
+                        .clickable {
+                            Log.v("query","Navigation vers MovieDetailScreen avec movieId: ${movie.id}")
+                            navController.navigate("movieDetail/${movie.id}")
+                        }
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,

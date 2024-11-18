@@ -102,23 +102,7 @@ class TmdbMovie(
     val genre_ids: List<Int> = listOf(),
     val poster_path: String? = ""
 )
-class TmdbActorDetailResult(
-    var adult: Boolean = false,
-    var also_known_as: List<String> = listOf(),
-    var biography: String,
-    var birthday: String,
-    var deathday: String,
-    var gender: Int,
-    var id: Int,
-    var homepage           : String?           = null,
-    var imdbId             : String?           = null,
-    var knownForDepartment : String?           = null,
-    var name               : String?           = null,
-    var placeOfBirth       : String?           = null,
-    var popularity         : Double?           = null,
-    var profilePath        : String
 
-)
 data class TmdbActeurResult(
     val page: Int = 0,
     val results: List<TmdbActeur> = listOf(),
@@ -161,8 +145,41 @@ data class TmdbSerie(
     val vote_average: Double = 0.0,
     val vote_count: Int = 0
 )
-
-class Country (
-    val id: Int,
-    val origin_country: String = ""
+data class TmdbMovieDetail(
+    val adult: Boolean = false,
+    val backdrop_path: String = "",
+    val belongs_to_collection: BelongsToCollection = BelongsToCollection(),
+    val budget: Int = 0,
+    val credits: Credits = Credits(),
+    val genres: List<Genre> = listOf(),
+    val homepage: String = "",
+    val id: Int = 0,
+    val imdb_id: String = "",
+    val origin_country: List<String> = listOf(),
+    val original_language: String = "",
+    val original_title: String = "",
+    val overview: String = "",
+    val popularity: Double = 0.0,
+    val poster_path: String = "",
+    val production_companies: List<ProductionCompany> = listOf(),
+    val production_countries: List<ProductionCountry> = listOf(),
+    val release_date: String = "",
+    val revenue: Int = 0,
+    val runtime: Int = 0,
+    val spoken_languages: List<SpokenLanguage> = listOf(),
+    val status: String = "",
+    val tagline: String = "",
+    val title: String = "",
+    val video: Boolean = false,
+    val vote_average: Double = 0.0,
+    val vote_count: Int = 0
 )
+
+data class BelongsToCollection(
+    val backdrop_path: String = "",
+    val id: Int = 0,
+    val name: String = "",
+    val poster_path: String = ""
+)
+
+
