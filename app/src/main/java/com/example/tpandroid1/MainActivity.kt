@@ -1,5 +1,4 @@
 package com.example.tpandroid1
-import com.example.tpandroid1.Series
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -79,7 +78,7 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
         composable("series") {
             Series(viewModel = viewModel,navController = navController)
         }
-        composable("acteurs") {
+        composable("personnes") {
             Acteurs(viewModel=viewModel, navController = navController)
         }
     }
@@ -106,14 +105,13 @@ fun MovieScreen(viewModel: MainViewModel,navController: NavHostController) {
                            // viewModel.getMovieByName(newQuery)
                         },
                         onSearch = { viewModel.getMovieByName(searchQuery)
-                            Log.v("query",searchQuery)
+                            //Log.v("query",searchQuery)
                                    },
                         placeholder = { Text("Rechercher un film") },
                         active = false,
                         onActiveChange = { active ->
                             if (!active) {
                                 searchQuery = ""
-                              //  viewModel.getMovies()
                             }
                         },
                         modifier = Modifier
@@ -167,7 +165,9 @@ fun MovieScreen(viewModel: MainViewModel,navController: NavHostController) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            IconButton(onClick = { navController.navigate("acteurs")}) {
+                            IconButton(onClick = {
+                                Log.v("Navigation", "Navigating to personnes")
+                                navController.navigate("personnes")}) {
                                 Icon(
                                     imageVector = Icons.Filled.Person,
                                     contentDescription = "Person Icon",

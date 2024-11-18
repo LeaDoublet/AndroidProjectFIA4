@@ -20,6 +20,7 @@ class MainViewModel : ViewModel() {
     val api=retrofit.create(Api::class.java)
     val movies = MutableStateFlow<List<TmdbMovie>>(listOf())
     val series = MutableStateFlow<List<TmdbSerie>>(listOf())
+    val acteurs = MutableStateFlow<List<TmdbActeur>>(listOf())
     val api_key = "5589302c27bf6110d7ea1724232a8e7e"
     fun getMovies(){
         viewModelScope.launch {
@@ -49,7 +50,7 @@ class MainViewModel : ViewModel() {
 
     fun getActeurs() {
         viewModelScope.launch {
-            val acteurs = api.getActeurs(api_key = api_key).results
+            acteurs.value = api.getActeurs(api_key = api_key).results
             Log.v("query",acteurs.toString())
 
         }

@@ -42,7 +42,7 @@ fun Series(viewModel: MainViewModel, navController: NavHostController) {
     var searchQuery by remember { mutableStateOf("") }
 
     LaunchedEffect(true) {viewModel.getSeries() }
-    Log.v("querycomposable",series.toString())
+    //Log.v("querycomposable",series.toString())
 
     Scaffold(
         topBar = {
@@ -105,7 +105,9 @@ fun Series(viewModel: MainViewModel, navController: NavHostController) {
                             Text("Series")
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            IconButton(onClick = {navController.navigate("acteurs") }) {
+                            IconButton(onClick = {
+                                //Log.v("Navigation", "Navigating to personnes")
+                                navController.navigate("personnes") }) {
                                 Icon(
                                     imageVector = Icons.Filled.Person,
                                     contentDescription = "Person Icon",
@@ -128,7 +130,7 @@ fun Series(viewModel: MainViewModel, navController: NavHostController) {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(series) { serie ->
-                Log.v("querySerie",serie.original_name)
+                //Log.v("querySerie",serie.original_name)
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()

@@ -46,11 +46,10 @@ import coil.compose.rememberAsyncImagePainter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Acteurs(viewModel: MainViewModel, navController: NavHostController) {
-    val acteurs by viewModel.series.collectAsState()
+    val acteurs by viewModel.acteurs.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     LaunchedEffect(true) { viewModel.getActeurs()}
     Log.v("query",acteurs.toString())
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -63,7 +62,7 @@ fun Acteurs(viewModel: MainViewModel, navController: NavHostController) {
                             //viewModel.getMovieByName(newQuery)
                         },
                         onSearch = { viewModel.getMovieByName(searchQuery) },
-                        placeholder = { Text("Rechercher une serie") },
+                        placeholder = { Text("Rechercher un acteur") },
                         active = false,
                         onActiveChange = { active ->
                             if (!active) {
@@ -112,7 +111,7 @@ fun Acteurs(viewModel: MainViewModel, navController: NavHostController) {
                             Text("Series")
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            IconButton(onClick = {navController.navigate("acteurs") }) {
+                            IconButton(onClick = {navController.navigate("personnes") }) {
                                 Icon(
                                     imageVector = Icons.Filled.Person,
                                     contentDescription = "Person Icon",
@@ -145,7 +144,7 @@ fun Acteurs(viewModel: MainViewModel, navController: NavHostController) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(8.dp)
                     ) {
-                        val imageUrl = "https://image.tmdb.org/t/p/w780" + acteur.poster_path
+                        val imageUrl = "https://image.tmdb.org/t/p/w780" + acteur.profile_path
                         Image(
                             painter = rememberAsyncImagePainter(imageUrl),
                             contentDescription = acteur.original_name,
@@ -162,11 +161,6 @@ fun Acteurs(viewModel: MainViewModel, navController: NavHostController) {
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = acteur.first_air_date,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
                         )
                     }
                 }
