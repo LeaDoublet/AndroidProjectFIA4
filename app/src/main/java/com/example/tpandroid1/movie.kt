@@ -8,10 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.Movie
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -22,9 +26,40 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import coil.compose.rememberAsyncImagePainter
+@Composable
+fun ActorCard(actor: Cast) {
+    Card(
+        modifier = Modifier
+            .width(120.dp)
+            .padding(4.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(8.dp)
+        ) {
+            val actorImageUrl = "https://image.tmdb.org/t/p/w185${actor.profile_path}"
+            Image(
+                painter = rememberAsyncImagePainter(actorImageUrl),
+                contentDescription = actor.name,
+                modifier = Modifier
+                    .size(80.dp)
+                    .padding(4.dp)
+            )
+            Text(
+                text = actor.name,
+                fontWeight = FontWeight.Bold,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(vertical = 1.dp)
+            )
+            Text(
+                text = "as ${actor.character}",
+                fontSize = 10.sp,
+                modifier = Modifier.padding(vertical = 1.dp)
+            )
+        }
+    }
+}
 @Composable
 fun MovieDetailScreen(movieId: Int, viewModel: MainViewModel, navController: NavHostController) {
     Log.v("query","L'id est $movieId, je suis dans le detail du film")
@@ -85,6 +120,23 @@ fun MovieDetailScreen(movieId: Int, viewModel: MainViewModel, navController: Nav
                 fontSize = 14.sp,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
+            Text(
+                text = "Casting:",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+            ) {
+                items(movieDetails.credits.cast) { actor ->
+                    ActorCard(actor = actor)
+                }
+            }
         } else {
             Text(
                 text = "Chargement des détails du film...",
