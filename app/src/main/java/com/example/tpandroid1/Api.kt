@@ -59,4 +59,12 @@ interface Api {
         @Query("append_to_response") append: String = "credits"
     ): TmdbMovieDetail
 
+    @GET("tv/{serieId}")
+    suspend fun getSerieDetailById(
+        @Path("serieId") serieId: Int,
+        @Query("api_key") api_key: String,
+        @Query("append_to_response") append: String = "credits"
+    ): TmdbSerieDetail
+
+
 }

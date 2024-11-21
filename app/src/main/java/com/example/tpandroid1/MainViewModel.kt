@@ -28,6 +28,7 @@ class MainViewModel : ViewModel() {
     val series = MutableStateFlow<List<TmdbSerie>>(listOf())
     val acteurs = MutableStateFlow<List<TmdbActeur>>(listOf())
     val movieDetails = mutableStateOf(TmdbMovieDetail())
+    val serieDetails = mutableStateOf(TmdbSerieDetail())
     val api_key = "5589302c27bf6110d7ea1724232a8e7e"
     fun getMovies(){
         viewModelScope.launch {
@@ -100,5 +101,19 @@ class MainViewModel : ViewModel() {
             }
         }
 
+    }
+
+    fun getSerieDetailById(serieId: Int) {
+        viewModelScope.launch {
+            try {
+                val serieDetailsResponse = api.getSerieDetailById(api_key = api_key, serieId = serieId)
+                Log.v("queryVMDetail",serieDetailsResponse.toString())
+                serieDetails.value = serieDetailsResponse
+            } catch (e: Exception) {
+                Log.v("query", "Erreur lors de la recherche de serie: ${e.message}")
+                // Émettre un objet vide en cas d'erreur
+                serieDetails.value = TmdbSerieDetail()
+            }
+        }
     }
 }

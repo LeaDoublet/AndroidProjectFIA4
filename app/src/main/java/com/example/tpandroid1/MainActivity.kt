@@ -87,6 +87,15 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
             Log.v("query","L'id recup est $movieIdrecup")
             MovieDetailScreen(movieId = movieIdrecup, viewModel = viewModel, navController = navController)
         }
+        composable("serieDetail/{serieId}") { backStackEntry ->
+            val serieIdrecup = backStackEntry.arguments?.getString("serieId")?.toInt() ?: 0
+            Log.v("query", "L'id recup est $serieIdrecup")
+            SerieDetailScreen(
+                serieId = serieIdrecup,
+                viewModel = viewModel,
+                navController = navController
+            )
+        }
     }
 }
 
