@@ -2,21 +2,16 @@ package com.example.tpandroid1
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Movie
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Tv
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
@@ -33,145 +28,159 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.rememberAsyncImagePainter
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Series(viewModel: MainViewModel, navController: NavHostController) {
+fun Series(viewModel: MainViewModel, navController: NavHostController, windowSizeClass: WindowSizeClass) {
     val series by viewModel.series.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
-    LaunchedEffect(true) {viewModel.getSeries() }
-    //Log.v("querycomposable",series.toString())
+    LaunchedEffect(true) { viewModel.getSeries() }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Fav'app") },
-                actions = {
-                    SearchBar(
-                        query = searchQuery,
-                        onQueryChange = { newQuery ->
-                            searchQuery = newQuery
-                            //viewModel.getMovieByName(newQuery)
-                        },
-                        onSearch = { viewModel.getSerieByName(searchQuery) },
-                        placeholder = { Text("Rechercher une serie") },
-                        active = false,
-                        onActiveChange = { active ->
-                            if (!active) {
-                                searchQuery = ""
+    when (windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Fav'app") },
+                        actions = {
+                            SearchBar(
+                                query = searchQuery,
+                                onQueryChange = { newQuery ->
+                                    searchQuery = newQuery
+                                },
+                                onSearch = { viewModel.getSerieByName(searchQuery) },
+                                placeholder = { Text("Rechercher une série") },
+                                active = false,
+                                onActiveChange = { active ->
+                                    if (!active) {
+                                        searchQuery = ""
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            ){
+
                             }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    ){
-
-                    }
-                }
-            )
-        },
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                content = {
-                    Row(
+                        }
+                    )
+                },
+                bottomBar = {
+                    BottomAppBar(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            IconButton(onClick = {
-                                navController.navigate("movie")
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Movie,
-                                    contentDescription = "Movie Clap Icon",
-                                    modifier = Modifier.size(50.dp)
-                                )
-                            }
-                            Text("Films")
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        content = {
+                            BottomNavigationItems(navController)
                         }
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            IconButton(onClick = { navController.navigate("series") }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Tv,
-                                    contentDescription = "Television Icon",
-                                    modifier = Modifier.size(50.dp)
-                                )
-                            }
-                            Text("Series")
-                        }
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            IconButton(onClick = {
-                                //Log.v("Navigation", "Navigating to personnes")
-                                navController.navigate("personnes") }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Person,
-                                    contentDescription = "Person Icon",
-                                    modifier = Modifier.size(50.dp)
-                                )
-                            }
-                            Text("Acteurs")
-                        }
-                    }
+                    )
                 }
-            )
-        }
-    ) { innerPadding ->
-        LazyVerticalGrid(
-
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.padding(innerPadding),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(series) { serie ->
-                //Log.v("querySerie",serie.original_name)
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .clickable {
-                            Log.v("query","Navigation vers SerieDetailScreen avec movieId: ${serie.id}")
-                            navController.navigate("serieDetail/${serie.id}")
-                        }
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        val imageUrl = "https://image.tmdb.org/t/p/w780" + serie.poster_path
-                        Image(
-                            painter = rememberAsyncImagePainter(imageUrl),
-                            contentDescription = serie.original_name,
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(180.dp)
-                        )
-                        Spacer(
-                            modifier = Modifier.height(8.dp)
-                        )
-                        Text(
-                            text = serie.original_name,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = serie.first_air_date,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
+            ) { innerPadding ->
+                SeriesGridContent(series, navController, innerPadding)
             }
+        }
+
+        else -> {
+            Row(modifier = Modifier.fillMaxSize()) {
+                // Barre latérale verticale
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(80.dp)
+                        .background(MaterialTheme.colorScheme.surface),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    VerticalNavigationItems(navController)
+                }
+
+                // Contenu principal
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 8.dp, vertical = 16.dp)
+                ) {
+                    TopAppBar(
+                        title = { Text("Fav'app") },
+                        actions = {
+                            SearchBar(
+                                query = searchQuery,
+                                onQueryChange = { newQuery ->
+                                    searchQuery = newQuery
+                                },
+                                onSearch = { viewModel.getSerieByName(searchQuery) },
+                                placeholder = { Text("Rechercher une série") },
+                                active = false,
+                                onActiveChange = { active ->
+                                    if (!active) {
+                                        searchQuery = ""
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            ){
+
+                            }
+                        }
+                    )
+                    SeriesGridContent(series, navController, PaddingValues(0.dp))
+                }
+            }
+        }
     }
 }
+
+@Composable
+fun SeriesGridContent(series: List<TmdbSerie>, navController: NavHostController, innerPadding: PaddingValues) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier.padding(innerPadding),
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(series) { serie ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .clickable {
+                        Log.v("query", "Navigation vers SerieDetailScreen avec serieId: ${serie.id}")
+                        navController.navigate("serieDetail/${serie.id}")
+                    }
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    val imageUrl = "https://image.tmdb.org/t/p/w780" + serie.poster_path
+                    Image(
+                        painter = rememberAsyncImagePainter(imageUrl),
+                        contentDescription = serie.original_name,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = serie.original_name,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = serie.first_air_date,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+    }
 }

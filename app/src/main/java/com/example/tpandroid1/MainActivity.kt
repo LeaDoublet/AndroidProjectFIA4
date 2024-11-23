@@ -81,10 +81,10 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
             MovieScreen(windowSizeClass = windowSizeClass,viewModel = viewModel,navController = navController)
         }
         composable("series") {
-            Series(viewModel = viewModel,navController = navController)
+            Series(viewModel = viewModel,navController = navController, windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass)
         }
         composable("personnes") {
-            Acteurs(viewModel=viewModel, navController = navController)
+            Acteurs(viewModel=viewModel, navController = navController, windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass)
         }
         composable("movieDetail/{movieId}") { backStackEntry ->
             val movieIdrecup = backStackEntry.arguments?.getString("movieId")?.toInt() ?: 0
