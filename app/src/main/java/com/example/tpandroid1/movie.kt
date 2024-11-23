@@ -2,6 +2,7 @@ package com.example.tpandroid1
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,9 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Card
@@ -62,15 +63,19 @@ fun ActorCard(actor: Cast) {
 }
 @Composable
 fun MovieDetailScreen(movieId: Int, viewModel: MainViewModel, navController: NavHostController) {
-    Log.v("query","L'id est $movieId, je suis dans le detail du film")
+    Log.v("query", "L'id est $movieId, je suis dans le detail du film")
     viewModel.getMovieDetailById(movieId)
     val movieDetails = viewModel.movieDetails.value
 
-    Column(modifier = Modifier
-        .padding(16.dp)
-        .fillMaxSize(),
+    // Ajouter un conteneur vertical défilable
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()) // Permettre le défilement
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Bouton retour
         IconButton(
             onClick = { navController.navigate("movie") },
             modifier = Modifier.align(Alignment.Start)
@@ -83,23 +88,29 @@ fun MovieDetailScreen(movieId: Int, viewModel: MainViewModel, navController: Nav
         }
 
         if (movieDetails.id != 0) {
+            // Titre du film
             Text(
                 text = movieDetails.original_title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
+
+            // Date de sortie
             Text(
                 text = "Release Date: ${movieDetails.release_date}",
                 fontSize = 16.sp,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
+
+            // Résumé
             Text(
                 text = movieDetails.overview,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
 
+            // Image du film
             val imageUrl = "https://image.tmdb.org/t/p/w780${movieDetails.poster_path}"
             Image(
                 painter = rememberAsyncImagePainter(imageUrl),
@@ -110,16 +121,21 @@ fun MovieDetailScreen(movieId: Int, viewModel: MainViewModel, navController: Nav
                     .padding(vertical = 8.dp)
             )
 
+            // Genres
             Text(
                 text = "Genres: ${movieDetails.genres.joinToString { it.name }}",
                 fontSize = 14.sp,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
+
+            // Budget
             Text(
                 text = "Budget: $${movieDetails.budget}",
                 fontSize = 14.sp,
                 modifier = Modifier.padding(vertical = 4.dp)
             )
+
+            // Section des acteurs
             Text(
                 text = "Casting:",
                 fontWeight = FontWeight.Bold,
@@ -127,17 +143,19 @@ fun MovieDetailScreen(movieId: Int, viewModel: MainViewModel, navController: Nav
                 modifier = Modifier.padding(vertical = 8.dp)
             )
 
+            // Liste horizontale des acteurs
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(movieDetails.credits.cast) { actor ->
                     ActorCard(actor = actor)
                 }
             }
         } else {
+            // État de chargement
             Text(
                 text = "Chargement des détails du film...",
                 fontSize = 16.sp,

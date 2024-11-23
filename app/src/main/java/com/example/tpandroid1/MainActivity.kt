@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -22,6 +23,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
@@ -37,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -74,7 +77,8 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
             Profil(windowSizeClass = windowSizeClass, navController = navController)
         }
         composable("movie") {
-            MovieScreen(viewModel = viewModel,navController = navController)
+            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            MovieScreen(windowSizeClass = windowSizeClass,viewModel = viewModel,navController = navController)
         }
         composable("series") {
             Series(viewModel = viewModel,navController = navController)
@@ -101,149 +105,218 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MovieScreen(viewModel: MainViewModel,navController: NavHostController) {
+fun MovieScreen(
+    viewModel: MainViewModel,
+    navController: NavHostController,
+    windowSizeClass: WindowSizeClass
+) {
     val movies by viewModel.movies.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
-    //recherche initale au démarrage de l'appli
-    LaunchedEffect(true) { viewModel.getMovies()}
+    LaunchedEffect(true) { viewModel.getMovies() }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Fav'app") },
-                actions = {
-                    SearchBar(
-                        query = searchQuery,
-                        onQueryChange = { newQuery ->
-                            searchQuery = newQuery
-                           // viewModel.getMovieByName(newQuery)
-                        },
-                        onSearch = { viewModel.getMovieByName(searchQuery)
-                            //Log.v("query",searchQuery)
-                                   },
-                        placeholder = { Text("Rechercher un film") },
-                        active = false,
-                        onActiveChange = { active ->
-                            if (!active) {
-                                searchQuery = ""
+    when (windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Fav'app") },
+                        actions = {
+                            SearchBar(
+                                query = searchQuery,
+                                onQueryChange = { newQuery ->
+                                    searchQuery = newQuery
+                                },
+                                onSearch = {
+                                    viewModel.getMovieByName(searchQuery)
+                                },
+                                placeholder = { Text("Rechercher un film") },
+                                active = false,
+                                onActiveChange = { active ->
+                                    if (!active) {
+                                        searchQuery = ""
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            ){
+
                             }
-                        },
+                        }
+                    )
+                },
+                bottomBar = {
+                    BottomAppBar(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        content = {
+                            BottomNavigationItems(navController)
+                        }
+                    )
+                }
+            ) { innerPadding ->
+                MovieGridContent(movies, navController, innerPadding)
+            }
+        }
+
+        else -> {
+            Row(modifier = Modifier.fillMaxSize()) {
+                // Barre latérale verticale pour ergonomie
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(80.dp)
+                        .background(MaterialTheme.colorScheme.surface),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    VerticalNavigationItems(navController)
+                }
+
+                // Contenu principal
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 8.dp, vertical = 16.dp)
+                ) {
+                    TopAppBar(
+                        title = { Text("Fav'app") },
+                        actions = {
+                            SearchBar(
+                                query = searchQuery,
+                                onQueryChange = { newQuery ->
+                                    searchQuery = newQuery
+                                },
+                                onSearch = {
+                                    viewModel.getMovieByName(searchQuery)
+                                },
+                                placeholder = { Text("Rechercher un film") },
+                                active = false,
+                                onActiveChange = { active ->
+                                    if (!active) {
+                                        searchQuery = ""
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            ){
+
+                            }
+                        }
+                    )
+                    MovieGridContent(movies, navController, PaddingValues(0.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BottomNavigationItems(navController: NavHostController) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        NavigationItem(
+            icon = Icons.Filled.Movie,
+            label = "Films",
+            onClick = { navController.navigate("movie") }
+        )
+        NavigationItem(
+            icon = Icons.Filled.Tv,
+            label = "Series",
+            onClick = { navController.navigate("series") }
+        )
+        NavigationItem(
+            icon = Icons.Filled.Person,
+            label = "Acteurs",
+            onClick = { navController.navigate("personnes") }
+        )
+    }
+}
+
+@Composable
+fun VerticalNavigationItems(navController: NavHostController) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxHeight()
+    ) {
+        NavigationItem(
+            icon = Icons.Filled.Movie,
+            label = "Films",
+            onClick = { navController.navigate("movie") }
+        )
+        NavigationItem(
+            icon = Icons.Filled.Tv,
+            label = "Series",
+            onClick = { navController.navigate("series") }
+        )
+        NavigationItem(
+            icon = Icons.Filled.Person,
+            label = "Acteurs",
+            onClick = { navController.navigate("personnes") }
+        )
+    }
+}
+
+@Composable
+fun NavigationItem(icon: ImageVector, label: String, onClick: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        IconButton(onClick = onClick) {
+            Icon(imageVector = icon, contentDescription = label, modifier = Modifier.size(50.dp))
+        }
+        Text(label)
+    }
+}
+
+@Composable
+fun MovieGridContent(movies: List<TmdbMovie>, navController: NavHostController, innerPadding: PaddingValues) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier.padding(innerPadding),
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(movies) { movie ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .clickable {
+                        navController.navigate("movieDetail/${movie.id}")
+                    }
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    val imageUrl = "https://image.tmdb.org/t/p/w780" + movie.poster_path
+                    Image(
+                        painter = rememberAsyncImagePainter(imageUrl),
+                        contentDescription = movie.original_title,
+                        contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp)
-                    ){
-
-                    }
-                }
-            )
-        },
-
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier.fillMaxWidth(),  // Remplir la largeur de l'écran
-                contentPadding = PaddingValues(horizontal = 16.dp),  // Optionnel, pour ajouter du padding
-                content = {
-                    Row(
+                            .height(180.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = movie.original_title,
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,  // Répartir également les icônes
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            IconButton(onClick = {
-                                navController.navigate("movie")
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Movie,
-                                    contentDescription = "Movie Clap Icon",
-                                    modifier = Modifier.size(50.dp)
-                                )
-
-                            }
-                            Text("Films")
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            IconButton(onClick = { navController.navigate("series") }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Tv,
-                                    contentDescription = "Television Icon",
-                                    modifier = Modifier.size(50.dp)
-                                )
-
-                            }
-                            Text("Series")
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            IconButton(onClick = {
-                                Log.v("Navigation", "Navigating to personnes")
-                                navController.navigate("personnes")}) {
-                                Icon(
-                                    imageVector = Icons.Filled.Person,
-                                    contentDescription = "Person Icon",
-                                    modifier = Modifier.size(50.dp)
-                                )
-                            }
-                            Text("Acteurs")
-                        }
-                    }
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = movie.release_date,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
                 }
-            )
-    }
-    ) { innerPadding ->
-        LazyVerticalGrid(
-
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.padding(innerPadding),
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(movies) { movie ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .clickable {
-                            Log.v("query","Navigation vers MovieDetailScreen avec movieId: ${movie.id}")
-                            navController.navigate("movieDetail/${movie.id}")
-                        }
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-                        val imageUrl = "https://image.tmdb.org/t/p/w780" + movie.poster_path
-                        Image(
-                            painter = rememberAsyncImagePainter(imageUrl),
-                            contentDescription = movie.original_title,
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(180.dp)
-                        )
-                        Spacer(
-                            modifier = Modifier.height(8.dp)
-                        )
-                        Text(
-                            text = movie.original_title,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = movie.release_date,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
             }
         }
     }
