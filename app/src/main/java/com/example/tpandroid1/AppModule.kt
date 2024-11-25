@@ -30,7 +30,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideRepository(@RealApi api: Tmdbapi): Repository {
+    fun provideRepository(@FakeApi api: Tmdbapi): Repository {
         return Repository(api)
     }
 }
