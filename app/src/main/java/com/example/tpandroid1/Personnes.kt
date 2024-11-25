@@ -48,7 +48,7 @@ import coil.compose.rememberAsyncImagePainter
 fun Acteurs(viewModel: MainViewModel, navController: NavHostController, windowSizeClass: WindowSizeClass) {
     val acteurs by viewModel.acteurs.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
-    LaunchedEffect(true) { viewModel.getActeurs() }
+    LaunchedEffect(true) { viewModel.getActors() }
     Log.v("query", acteurs.toString())
 
     when (windowSizeClass.windowWidthSizeClass) {
@@ -63,7 +63,7 @@ fun Acteurs(viewModel: MainViewModel, navController: NavHostController, windowSi
                                 onQueryChange = { newQuery ->
                                     searchQuery = newQuery
                                 },
-                                onSearch = { viewModel.getActeurByName(searchQuery) },
+                                onSearch = { viewModel.searchActorsByName(searchQuery) },
                                 placeholder = { Text("Rechercher un acteur") },
                                 active = false,
                                 onActiveChange = { active ->
@@ -122,7 +122,7 @@ fun Acteurs(viewModel: MainViewModel, navController: NavHostController, windowSi
                                 onQueryChange = { newQuery ->
                                     searchQuery = newQuery
                                 },
-                                onSearch = { viewModel.getActeurByName(searchQuery) },
+                                onSearch = { viewModel.searchActorsByName(searchQuery) },
                                 placeholder = { Text("Rechercher un acteur") },
                                 active = false,
                                 onActiveChange = { active ->

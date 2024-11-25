@@ -64,7 +64,7 @@ fun ActorCard(actor: Cast) {
 @Composable
 fun MovieDetailScreen(movieId: Int, viewModel: MainViewModel, navController: NavHostController) {
     Log.v("query", "L'id est $movieId, je suis dans le detail du film")
-    viewModel.getMovieDetailById(movieId)
+    viewModel.getMovieDetailsById(movieId)
     val movieDetails = viewModel.movieDetails.value
 
     // Ajouter un conteneur vertical défilable

@@ -1,118 +1,100 @@
 package com.example.tpandroid1
 
 import android.util.Log
-import android.widget.ListView
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-import java.util.concurrent.Flow
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
-    //var listFilmTendance by MutableList(6,"")
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.themoviedb.org/3/")
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build()
-
-    val api=retrofit.create(Api::class.java)
-    val movies = MutableStateFlow<List<TmdbMovie>>(listOf())
-    val series = MutableStateFlow<List<TmdbSerie>>(listOf())
-    val acteurs = MutableStateFlow<List<TmdbActeur>>(listOf())
+@HiltViewModel
+class MainViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+    val movies = MutableStateFlow<List<TmdbMovie>>(emptyList())
+    val series = MutableStateFlow<List<TmdbSerie>>(emptyList())
+    val acteurs = MutableStateFlow<List<TmdbActeur>>(emptyList())
     val movieDetails = mutableStateOf(TmdbMovieDetail())
     val serieDetails = mutableStateOf(TmdbSerieDetail())
-    val api_key = "5589302c27bf6110d7ea1724232a8e7e"
-    fun getMovies(){
-        viewModelScope.launch {
-            movies.value=api.lastmovies(api_key =api_key ).results
-        }
-    }
 
-    fun getSeries(){
-        viewModelScope.launch {
-            series.value=api.lastseries(api_key =api_key ).results
-            Log.v("queryviewmodel",series.value.toString())
-        }
-    }
-
-    fun getSerieByName(keyWord:String){
+    fun getMovies() {
         viewModelScope.launch {
             try {
-                val searchResults = api.getSerieByKeyWord(api_key = api_key, keyWord = keyWord)
-                // Mettre à jour la liste des serie avec les résultats de la recherche
-                series.value = searchResults.results
+                movies.value = repository.getLastMovies()
             } catch (e: Exception) {
-                Log.v("query","Erreur lors de la recherche de serie: ${e.message}")
+                Log.e("MainViewModel", "Error fetching movies: ${e.message}")
             }
         }
     }
 
-    fun getMovieByName(keyWord:String){
+    fun getSeries() {
         viewModelScope.launch {
             try {
-                val searchResults = api.getMovieByKeyWord(api_key = api_key, keyWord = keyWord)
-                // Mettre à jour la liste des films avec les résultats de la recherche
-                movies.value = searchResults.results
-                Log.v("query",movies.value.toString())
+                series.value = repository.getLastSeries()
             } catch (e: Exception) {
-                Log.v("query","Erreur lors de la recherche de films: ${e.message}")
-            }
-        }
-    }
-    fun getMovieDetailById(movieId: Int) {
-        viewModelScope.launch {
-            try {
-                val movieDetailsResponse = api.getMovieDetailById(api_key = api_key, movieId = movieId)
-                Log.v("queryVMDetail",movieDetailsResponse.toString())
-                movieDetails.value = movieDetailsResponse
-            } catch (e: Exception) {
-                Log.v("query", "Erreur lors de la recherche de films: ${e.message}")
-                // Émettre un objet vide en cas d'erreur
-                movieDetails.value = TmdbMovieDetail()
+                Log.e("MainViewModel", "Error fetching series: ${e.message}")
             }
         }
     }
 
-    fun getActeurs() {
-        viewModelScope.launch {
-            acteurs.value = api.getActeurs(api_key = api_key).results
-            Log.v("query",acteurs.toString())
-
-        }
-    }
-
-    fun getActeurByName(keyWord: String) {
+    fun searchMoviesByName(keyword: String) {
         viewModelScope.launch {
             try {
-                val searchResults = api.getActeurByKeyWord(api_key = api_key, keyWord = keyWord)
-                // Mettre à jour la liste des acteurs avec les résultats de la recherche
-                acteurs.value = searchResults.results
+                movies.value = repository.searchMoviesByName(keyword)
             } catch (e: Exception) {
-                Log.v("query", "Erreur lors de la recherche d'acteur: ${e.message}")
-
+                Log.e("MainViewModel", "Error searching movies: ${e.message}")
             }
         }
-
     }
 
-    fun getSerieDetailById(serieId: Int) {
+    fun searchSeriesByName(keyword: String) {
         viewModelScope.launch {
             try {
-                val serieDetailsResponse = api.getSerieDetailById(api_key = api_key, serieId = serieId)
-                Log.v("queryVMDetail",serieDetailsResponse.toString())
-                serieDetails.value = serieDetailsResponse
+                series.value = repository.searchSeriesByName(keyword)
             } catch (e: Exception) {
-                Log.v("query", "Erreur lors de la recherche de serie: ${e.message}")
-                // Émettre un objet vide en cas d'erreur
-                serieDetails.value = TmdbSerieDetail()
+                Log.e("MainViewModel", "Error searching series: ${e.message}")
+            }
+        }
+    }
+
+    fun getMovieDetailsById(movieId: Int) {
+        viewModelScope.launch {
+            try {
+                movieDetails.value = repository.getMovieDetailsById(movieId)
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error fetching movie details: ${e.message}")
+                movieDetails.value = TmdbMovieDetail() // Placeholder en cas d'erreur
+            }
+        }
+    }
+
+    fun getSerieDetailsById(serieId: Int) {
+        viewModelScope.launch {
+            try {
+                serieDetails.value = repository.getSerieDetailsById(serieId)
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error fetching serie details: ${e.message}")
+                serieDetails.value = TmdbSerieDetail() // Placeholder en cas d'erreur
+            }
+        }
+    }
+
+    fun getActors() {
+        viewModelScope.launch {
+            try {
+                acteurs.value = repository.getActors()
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error fetching actors: ${e.message}")
+            }
+        }
+    }
+
+    fun searchActorsByName(keyword: String) {
+        viewModelScope.launch {
+            try {
+                acteurs.value = repository.searchActorsByName(keyword)
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error searching actors: ${e.message}")
             }
         }
     }

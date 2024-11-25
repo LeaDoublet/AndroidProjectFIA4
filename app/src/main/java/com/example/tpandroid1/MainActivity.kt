@@ -53,7 +53,9 @@ import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.rememberAsyncImagePainter
 import com.example.tpandroid1.ui.theme.TPAndroid1Theme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,7 +130,7 @@ fun MovieScreen(
                                     searchQuery = newQuery
                                 },
                                 onSearch = {
-                                    viewModel.getMovieByName(searchQuery)
+                                    viewModel.searchMoviesByName(searchQuery)
                                 },
                                 placeholder = { Text("Rechercher un film") },
                                 active = false,
@@ -189,7 +191,7 @@ fun MovieScreen(
                                     searchQuery = newQuery
                                 },
                                 onSearch = {
-                                    viewModel.getMovieByName(searchQuery)
+                                    viewModel.searchMoviesByName(searchQuery)
                                 },
                                 placeholder = { Text("Rechercher un film") },
                                 active = false,

@@ -27,7 +27,7 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun SerieDetailScreen(serieId: Int, viewModel: MainViewModel, navController: NavHostController) {
-    viewModel.getSerieDetailById(serieId)
+    viewModel.getSerieDetailsById(serieId)
     val serieDetails = viewModel.serieDetails.value
 
     Column(

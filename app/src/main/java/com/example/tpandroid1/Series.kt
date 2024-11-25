@@ -53,7 +53,7 @@ fun Series(viewModel: MainViewModel, navController: NavHostController, windowSiz
                                 onQueryChange = { newQuery ->
                                     searchQuery = newQuery
                                 },
-                                onSearch = { viewModel.getSerieByName(searchQuery) },
+                                onSearch = { viewModel.searchSeriesByName(searchQuery) },
                                 placeholder = { Text("Rechercher une série") },
                                 active = false,
                                 onActiveChange = { active ->
@@ -112,7 +112,7 @@ fun Series(viewModel: MainViewModel, navController: NavHostController, windowSiz
                                 onQueryChange = { newQuery ->
                                     searchQuery = newQuery
                                 },
-                                onSearch = { viewModel.getSerieByName(searchQuery) },
+                                onSearch = { viewModel.searchSeriesByName(searchQuery) },
                                 placeholder = { Text("Rechercher une série") },
                                 active = false,
                                 onActiveChange = { active ->
