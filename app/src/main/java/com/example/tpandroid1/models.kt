@@ -1,4 +1,9 @@
 package com.example.tpandroid1
+
+data class Credits(
+    val cast: List<Cast> = listOf(),
+    val crew: List<Crew> = listOf()
+)
 data class Movie(
     val adult: Boolean = false,
     val backdrop_path: String = "",
@@ -26,14 +31,9 @@ data class Movie(
     val title: String = "",
     val video: Boolean = false,
     val vote_average: Double = 0.0,
-    val vote_count: Int = 0
+    val vote_count: Int = 0,
+    val isFav: Boolean = false // Ajout du champ
 )
-
-data class Credits(
-    val cast: List<Cast> = listOf(),
-    val crew: List<Crew> = listOf()
-)
-
 data class Genre(
     val id: Int = 0,
     val name: String = ""
@@ -70,7 +70,7 @@ data class Cast(
     val original_name: String = "",
     val popularity: Double = 0.0,
     val profile_path: String = "",
-    var known_for: List<Movie> = listOf()
+    var known_for: List<TmdbMovie> = listOf()
 )
 
 data class Crew(
@@ -88,11 +88,11 @@ data class Crew(
 )
 
 
-class TmdbMovieResult(
+data class TmdbMovieResult(
     var page: Int = 0,
     val results: List<TmdbMovie> = listOf()
 )
-class TmdbMovie(
+data class TmdbMovie(
     var overview: String = "",
     val release_date: String = "",
     val id: String = "",
@@ -100,7 +100,12 @@ class TmdbMovie(
     val original_title: String = "",
     val backdrop_path: String? = "",
     val genre_ids: List<Int> = listOf(),
-    val poster_path: String? = ""
+    val poster_path: String? = "",
+    val popularity: Double = 0.0,
+    val vote_count: Int = 0,
+    val video: Boolean = false,
+    val vote_average: Double = 0.0,
+    val isFav:Boolean=false
 )
 
 data class TmdbActeurResult(
@@ -119,7 +124,8 @@ data class TmdbActeur(
     val name: String = "",
     val original_name: String = "",
     val popularity: Double = 0.0,
-    val profile_path: String = ""
+    val profile_path: String = "",
+    val isFav:Boolean=false
 )
 data class TmdbSerieResult(
     val page: Int = 0,
@@ -143,7 +149,8 @@ data class TmdbSerie(
     val popularity: Double = 0.0,
     val poster_path: String = "",
     val vote_average: Double = 0.0,
-    val vote_count: Int = 0
+    val vote_count: Int = 0,
+    val isFav:Boolean=false
 )
 data class TmdbMovieDetail(
     val adult: Boolean = false,

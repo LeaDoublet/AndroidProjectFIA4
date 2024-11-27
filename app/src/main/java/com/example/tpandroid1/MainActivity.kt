@@ -49,10 +49,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.rememberAsyncImagePainter
 import com.example.tpandroid1.ui.theme.TPAndroid1Theme
+import com.squareup.moshi.Moshi
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -323,8 +325,6 @@ fun MovieGridContent(movies: List<TmdbMovie>, navController: NavHostController, 
         }
     }
 }
-
-
 
 @Composable
 fun Profil(windowSizeClass: WindowSizeClass, navController: NavHostController, modifier: Modifier = Modifier) {

@@ -397,7 +397,7 @@ public class FakeTmdbApi : Tmdbapi {
     }
 
     override suspend fun getMovieDetailById(
-        movieId: Int,
+        movieId: String,
         api_key: String,
         append: String
     ): TmdbMovieDetail {
@@ -405,7 +405,7 @@ public class FakeTmdbApi : Tmdbapi {
     }
 
     override suspend fun getSerieDetailById(
-        serieId: Int,
+        serieId: String,
         api_key: String,
         append: String
     ): TmdbSerieDetail {
