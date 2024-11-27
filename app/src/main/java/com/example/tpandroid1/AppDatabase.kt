@@ -11,7 +11,6 @@ import androidx.room.TypeConverters
     ActeurEntity::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun dao(): Dao
     abstract fun filmDao(): FilmDao
     abstract fun serieDao(): SerieDao
     abstract fun acteurDao(): ActeurDao

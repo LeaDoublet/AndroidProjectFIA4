@@ -69,12 +69,27 @@ dependencies {
 
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.foundation.layout.android)
-    implementation(libs.androidx.room.runtime.android)
+
 
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
 
-    annotationProcessor(libs.androidx.room.compiler)
+   
+    kapt("androidx.room:room-compiler:2.6.1")
+
+    val room_version = "2.6.1"
+
+    implementation("androidx.room:room-runtime:$room_version")
+
+
+    // If this project only uses Java source, use the Java annotationProcessor
+    // No additional plugins are necessary
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:$room_version")
+
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.coil.compose)
@@ -93,7 +108,5 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 }
-kapt{
-    correctErrorTypes = true
-}
+
 
