@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,7 +54,7 @@ fun Series(viewModel: MainViewModel, navController: NavHostController, windowSiz
                                 onQueryChange = { newQuery ->
                                     searchQuery = newQuery
                                 },
-                                onSearch = { viewModel.searchSeriesByName(searchQuery) },
+                                onSearch = { onSearch(searchQuery,viewModel,"series") },
                                 placeholder = { Text("Rechercher une série") },
                                 active = false,
                                 onActiveChange = { active ->
@@ -112,7 +113,7 @@ fun Series(viewModel: MainViewModel, navController: NavHostController, windowSiz
                                 onQueryChange = { newQuery ->
                                     searchQuery = newQuery
                                 },
-                                onSearch = { viewModel.searchSeriesByName(searchQuery) },
+                                onSearch = { onSearch(searchQuery,viewModel,"series") },
                                 placeholder = { Text("Rechercher une série") },
                                 active = false,
                                 onActiveChange = { active ->
@@ -137,8 +138,19 @@ fun Series(viewModel: MainViewModel, navController: NavHostController, windowSiz
 
 @Composable
 fun SeriesGridContent(series: List<TmdbSerie>, navController: NavHostController, innerPadding: PaddingValues) {
+    var cellule: Int = 2;
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    when (windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
+            cellule = 2
+        }
+        WindowWidthSizeClass.MEDIUM -> {
+            cellule = 3
+        }
+
+    }
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(cellule),
         modifier = Modifier.padding(innerPadding),
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),

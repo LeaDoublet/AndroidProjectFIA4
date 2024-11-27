@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -63,7 +64,7 @@ fun Acteurs(viewModel: MainViewModel, navController: NavHostController, windowSi
                                 onQueryChange = { newQuery ->
                                     searchQuery = newQuery
                                 },
-                                onSearch = { viewModel.searchActorsByName(searchQuery) },
+                                onSearch = { onSearch(searchQuery,viewModel,"personnes") },
                                 placeholder = { Text("Rechercher un acteur") },
                                 active = false,
                                 onActiveChange = { active ->
@@ -122,7 +123,7 @@ fun Acteurs(viewModel: MainViewModel, navController: NavHostController, windowSi
                                 onQueryChange = { newQuery ->
                                     searchQuery = newQuery
                                 },
-                                onSearch = { viewModel.searchActorsByName(searchQuery) },
+                                onSearch = { onSearch(searchQuery,viewModel,"personnes") },
                                 placeholder = { Text("Rechercher un acteur") },
                                 active = false,
                                 onActiveChange = { active ->
@@ -147,13 +148,25 @@ fun Acteurs(viewModel: MainViewModel, navController: NavHostController, windowSi
 
 @Composable
 fun ActeursGridContent(acteurs: List<TmdbActeur>, navController: NavHostController, innerPadding: PaddingValues) {
+    var cellule: Int = 2;
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    when (windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
+            cellule = 2
+        }
+        WindowWidthSizeClass.MEDIUM -> {
+            cellule = 3
+        }
+
+    }
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(cellule),
         modifier = Modifier.padding(innerPadding),
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+
         items(acteurs) { acteur ->
             Log.v("querySerie", acteur.original_name)
             Card(

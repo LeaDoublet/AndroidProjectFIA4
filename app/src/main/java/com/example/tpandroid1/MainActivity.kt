@@ -130,7 +130,7 @@ fun MovieScreen(
                                     searchQuery = newQuery
                                 },
                                 onSearch = {
-                                    viewModel.searchMoviesByName(searchQuery)
+                                    onSearch(searchQuery,viewModel,"movie")
                                 },
                                 placeholder = { Text("Rechercher un film") },
                                 active = false,
@@ -191,7 +191,7 @@ fun MovieScreen(
                                     searchQuery = newQuery
                                 },
                                 onSearch = {
-                                    viewModel.searchMoviesByName(searchQuery)
+                                    onSearch(searchQuery,viewModel,"movie")
                                 },
                                 placeholder = { Text("Rechercher un film") },
                                 active = false,
@@ -211,6 +211,22 @@ fun MovieScreen(
                     MovieGridContent(movies, navController, PaddingValues(0.dp))
                 }
             }
+        }
+    }
+}
+
+fun onSearch(searchQuery : String, viewModel: MainViewModel,ecran : String) {
+    if (searchQuery.isEmpty()) {
+        when(ecran){
+            "movie" -> viewModel.getMovies()
+            "series" -> viewModel.getSeries()
+            "personnes" -> viewModel.getActors()
+        }
+    } else {
+        when (ecran) {
+            "movie" -> viewModel.searchMoviesByName(searchQuery)
+            "series" -> viewModel.searchSeriesByName(searchQuery)
+            "personnes" -> viewModel.searchActorsByName(searchQuery)
         }
     }
 }
@@ -277,8 +293,21 @@ fun NavigationItem(icon: ImageVector, label: String, onClick: () -> Unit) {
 
 @Composable
 fun MovieGridContent(movies: List<TmdbMovie>, navController: NavHostController, innerPadding: PaddingValues) {
+    var cellule: Int = 2;
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    when (windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
+            cellule = 2
+        }
+        WindowWidthSizeClass.MEDIUM -> {
+            cellule = 3
+        }
+
+        }
+
+
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(cellule),
         modifier = Modifier.padding(innerPadding),
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
