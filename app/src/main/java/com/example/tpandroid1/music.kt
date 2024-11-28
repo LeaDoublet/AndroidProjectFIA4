@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
+import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,23 +114,28 @@ fun MusicGridContent(playlists: List<Playlist>, navController: NavHostController
 
         items(playlists) { playl ->
             Log.v("querySerie", playl.title)
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(8.dp)
+            //items(playl.tracks){ track ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
                 ) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = playl.title,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        // Il faudrait mettre track.id si dessous si ma deuxieme iteration fonctionnait...
+                        AsyncImage(model = "file:///android_assets/images/${playl.id}", contentDescription = "")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = playl.title,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+            //}
+
             }
         }
     }
