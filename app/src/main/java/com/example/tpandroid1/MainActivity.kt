@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Tv
@@ -45,6 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentManager.BackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -87,6 +89,10 @@ fun NavigationComponent(navController: NavHostController, viewModel: MainViewMod
         }
         composable("personnes") {
             Acteurs(viewModel=viewModel, navController = navController, windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass)
+        }
+        composable("music"){ backStackEntry ->
+            Music(viewModel=viewModel, navController = navController, windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass)
+
         }
         composable("movieDetail/{movieId}") { backStackEntry ->
             val movieIdrecup = backStackEntry.arguments?.getString("movieId")?.toInt() ?: 0
@@ -253,6 +259,11 @@ fun BottomNavigationItems(navController: NavHostController) {
             label = "Acteurs",
             onClick = { navController.navigate("personnes") }
         )
+        NavigationItem(
+            icon = Icons.Filled.AddCircle,
+            label = "music",
+            onClick = {navController.navigate("music") }
+        )
     }
 }
 
@@ -360,7 +371,8 @@ fun Profil(windowSizeClass: WindowSizeClass, navController: NavHostController, m
     when (windowSizeClass.windowWidthSizeClass) {
         WindowWidthSizeClass.COMPACT -> {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -409,7 +421,7 @@ fun Profil(windowSizeClass: WindowSizeClass, navController: NavHostController, m
                 Button(
                     onClick = {
                         // Navigation vers MovieScreen
-                        navController.navigate("movie")
+                        navController.navigate("music")
                     },
                     modifier = Modifier.padding(16.dp)
                 ) {
