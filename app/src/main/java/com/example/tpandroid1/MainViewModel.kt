@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplicationtest.playlistjson
+import com.squareup.moshi.Moshi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -16,6 +18,7 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
     val acteurs = MutableStateFlow<List<TmdbActeur>>(emptyList())
     val movieDetails = mutableStateOf(TmdbMovieDetail())
     val serieDetails = mutableStateOf(TmdbSerieDetail())
+    val playlists = MutableStateFlow<List<Playlist>>(emptyList())
 
     fun getMovies() {
         viewModelScope.launch {
@@ -36,6 +39,16 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Vi
             }
         }
     }
+    fun getPlaylist() {
+        viewModelScope.launch {
+            try {
+                playlists.value = listOf(repository.getPlaylist())
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error fetching series: ${e.message}")
+            }
+        }
+    }
+
 
     fun searchMoviesByName(keyword: String) {
         viewModelScope.launch {

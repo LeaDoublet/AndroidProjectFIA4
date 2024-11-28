@@ -127,6 +127,9 @@ data class TmdbSerieResult(
     val total_pages: Int = 0,
     val total_results: Int = 0
 )
+data class PlaylistResult(
+    val results: List<Playlist> = listOf()
+)
 
 data class TmdbSerie(
     val adult: Boolean = false,
